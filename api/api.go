@@ -42,8 +42,8 @@ func GetFilm(id uint64) (FilmInfo, error) {
 	return film, err
 }
 
-func GetGallery(id uint64) (GalleryTemp, error) {
-	var gallery GalleryTemp
+func GetGallery(id uint64) (GalleryInfo, error) {
+	var gallery GalleryInfo
 	err := getInstanse(id, getGalleryQuery, &gallery)
 	return gallery, err
 }
