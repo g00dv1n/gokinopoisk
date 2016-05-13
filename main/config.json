@@ -1,0 +1,5 @@
+{
+    "mongoUrl": "localhost",
+    "startId": "299",
+    "endId": 900000
+}
