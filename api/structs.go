@@ -12,6 +12,7 @@ type FilmInfo struct {
 	Country           string     `json:"country"`
 	Slogan            string     `json:"slogan"`
 	Genre             string     `json:"genre"`
+	Year              uint32     `json:"year,string"`
 }
 
 //RatingInfo film rating info
@@ -34,4 +35,11 @@ type Gallery struct {
 type KadrInfo struct {
 	Image   string `json:"image"`
 	Preview string `json:"preview"`
+}
+
+type GalleryInfoForSave struct {
+	Kadr   []KadrInfo
+	KadrSp []KadrInfo
+	Poster []KadrInfo
+	FilmID string
 }

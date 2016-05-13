@@ -1,5 +1,9 @@
 {
     "mongoUrl": "localhost",
     "startId": "299",
-    "endId": 900000
+    "endId": 900000,
+    "database": "mego",
+    "user" : "admin",
+    "password": "r1taFrHCYlic",
+    "minImdb" : "6.00"
 }

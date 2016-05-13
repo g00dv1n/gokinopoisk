@@ -11,7 +11,7 @@ import (
 func runner(id uint64) {
 	film, err := api.GetFilm(id)
 	if err == nil {
-		c.Insert(film)
+		filmsCollection.Insert(film)
 	}
 	wg.Done()
 }
@@ -20,51 +20,69 @@ func scrapper() {
 	for atomic.LoadUint64(&atomicCounter) < end {
 		atomic.AddUint64(&atomicCounter, 1)
 		film, err := api.GetFilm(atomic.LoadUint64(&atomicCounter) - 1)
-		if err == nil {
-			c.Insert(film)
+		gallery, err := api.GetGallery(atomic.LoadUint64(&atomicCounter) - 1)
+
+		saveGallery := api.GalleryInfoForSave{
+			Kadr:   gallery.Gallery.Kadr,
+			KadrSp: gallery.Gallery.KadrSp,
+			Poster: gallery.Gallery.Poster,
+		}
+
+		if err == nil && film.RatingData.RatingIMDb > minImdb {
+			filmsCollection.Insert(film)
+			imagesCollection.Insert(saveGallery)
 		}
 	}
 	wg.Done()
 }
 
 var (
-	c             *mgo.Collection
-	end           uint64
-	wg            sync.WaitGroup
-	atomicCounter uint64
+	filmsCollection  *mgo.Collection
+	imagesCollection *mgo.Collection
+	end              uint64
+	wg               sync.WaitGroup
+	atomicCounter    uint64
+	minImdb          float32
 )
 
 func main() {
 	fmt.Println("Start scrapper..")
 
-	/*var conf config
+	var conf config
 	err := conf.GetConfig("config.json")
 	end = conf.EndID
 	atomicCounter = conf.StartID
+	minImdb = conf.MinImdb
 
 	if err != nil {
 		fmt.Println("Cannot find config.json")
 		return
 	}
 
-	session, err := mgo.Dial(conf.MongoURL)
+	mongoDBDialInfo := &mgo.DialInfo{
+		Addrs:    []string{conf.MongoURL},
+		Database: conf.Database,
+		Username: conf.User,
+		Password: conf.Password,
+	}
+
+	session, err := mgo.DialWithInfo(mongoDBDialInfo)
+
+	//session, err := mgo.Dial(conf.MongoURL)
 	defer session.Close()
 	if err != nil {
-		fmt.Println("Cannot find config.json")
+		fmt.Println("Cannot connect to mongo")
 		return
 	}
-	c = session.DB("kinopoisk").C("films")
+	filmsCollection = session.DB(conf.Database).C("films")
+	imagesCollection = session.DB(conf.Database).C("images")
 
 	for i := 0; i < 10000; i++ {
 		wg.Add(1)
 		scrapper()
 	}
 
-	wg.Wait()*/
-
-	gallery, _ := api.GetGallery(714888)
-
-	fmt.Println(gallery.Gallery.Kadr[5])
+	wg.Wait()
 
 	fmt.Println("Done!")
 }
