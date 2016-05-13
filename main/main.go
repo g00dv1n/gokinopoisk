@@ -69,16 +69,16 @@ func main() {
 		return
 	}
 
-	/*mongoDBDialInfo := &mgo.DialInfo{
+	mongoDBDialInfo := &mgo.DialInfo{
 		Addrs:    []string{conf.MongoURL},
 		Database: conf.Database,
 		Username: conf.User,
 		Password: conf.Password,
 	}
 
-	session, err := mgo.DialWithInfo(mongoDBDialInfo)*/
+	session, err := mgo.DialWithInfo(mongoDBDialInfo)
 
-	session, err := mgo.Dial("localhost")
+	//session, err := mgo.Dial("localhost")
 	defer session.Close()
 	if err != nil {
 		fmt.Println("Cannot connect to mongo")
