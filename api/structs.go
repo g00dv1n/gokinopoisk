@@ -29,7 +29,7 @@ type GalleryInfo struct {
 type Gallery struct {
 	Kadr   []KadrInfo `json:"kadr"`
 	KadrSp []KadrInfo `json:"kadr_sp"`
-	Poster []KadrInfo `json:"poseter"`
+	Poster []KadrInfo `json:"poster"`
 }
 
 type KadrInfo struct {

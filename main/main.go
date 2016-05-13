@@ -18,14 +18,24 @@ func runner(id uint64) {
 
 func scrapper() {
 	for atomic.LoadUint64(&atomicCounter) < end {
-		atomic.AddUint64(&atomicCounter, 1)
-		film, err := api.GetFilm(atomic.LoadUint64(&atomicCounter) - 1)
-		gallery, err := api.GetGallery(atomic.LoadUint64(&atomicCounter) - 1)
+		var (
+			counter     uint64
+			film        api.FilmInfo
+			gallery     api.GalleryInfo
+			saveGallery api.GalleryInfoForSave
+			err         error
+		)
 
-		saveGallery := api.GalleryInfoForSave{
+		atomic.AddUint64(&atomicCounter, 1)
+		counter = atomic.LoadUint64(&atomicCounter) - 1
+		film, err = api.GetFilm(counter)
+		gallery, err = api.GetGallery(counter)
+
+		saveGallery = api.GalleryInfoForSave{
 			Kadr:   gallery.Gallery.Kadr,
 			KadrSp: gallery.Gallery.KadrSp,
 			Poster: gallery.Gallery.Poster,
+			FilmID: film.FilmID,
 		}
 
 		if err == nil && film.RatingData.RatingIMDb > minImdb {
@@ -59,16 +69,16 @@ func main() {
 		return
 	}
 
-	mongoDBDialInfo := &mgo.DialInfo{
+	/*mongoDBDialInfo := &mgo.DialInfo{
 		Addrs:    []string{conf.MongoURL},
 		Database: conf.Database,
 		Username: conf.User,
 		Password: conf.Password,
 	}
 
-	session, err := mgo.DialWithInfo(mongoDBDialInfo)
+	session, err := mgo.DialWithInfo(mongoDBDialInfo)*/
 
-	//session, err := mgo.Dial(conf.MongoURL)
+	session, err := mgo.Dial("localhost")
 	defer session.Close()
 	if err != nil {
 		fmt.Println("Cannot connect to mongo")
