@@ -1,0 +1,10 @@
+{
+    "mongoUrl": "127.9.77.130:27017",
+    "startId": "299",
+    "endId": 900000,
+    "database": "mego",
+    "user" : "admin",
+    "password": "r1taFrHCYlic",
+    "minImdb" : "6.00",
+    "goroutinesNumber": 10000
+}

@@ -43,3 +43,26 @@ type GalleryInfoForSave struct {
 	Poster []KadrInfo
 	FilmID string
 }
+
+type DataForSave struct {
+	Gallery *GalleryInfoForSave
+	Film    *FilmInfo
+	FilmID  uint64
+}
+
+func (data *DataForSave) FethData() error {
+	film, err := GetFilm(data.FilmID)
+	gallery, err := GetGallery(data.FilmID)
+
+	data.Gallery = &GalleryInfoForSave{
+		Kadr:   gallery.Gallery.Kadr,
+		KadrSp: gallery.Gallery.KadrSp,
+		Poster: gallery.Gallery.Poster,
+		FilmID: film.FilmID,
+	}
+
+	data.Film = &film
+
+	return err
+
+}
